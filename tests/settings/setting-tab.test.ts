@@ -64,6 +64,27 @@ describe("SettingTab", () => {
 			expect(tab.getControlValue(key)).toBe(settings[key as keyof GraphuneSettings]);
 	});
 
+	it.each([
+		["extractedFilesFolder", "text", { placeholder: "e.g. extracted-notes" }],
+		["defaultNodeWidth", "slider", { min: 200, max: 800, step: 50 }],
+		["defaultNodeHeight", "slider", { min: 100, max: 600, step: 50 }],
+		["fileNamePrefix", "text", { placeholder: "e.g. extracted-" }],
+		["showPreviewBeforeCreate", "toggle", {}],
+		["quickCardDefaultTitle", "text", { placeholder: "e.g. Untitled" }],
+		["enableEdgeSync", "toggle", {}],
+		["defaultEdgeColor", "text", { placeholder: "e.g. 1" }],
+		["defaultEdgeLabel", "text", { placeholder: "e.g. relates to" }],
+		[
+			"language",
+			"dropdown",
+			{ options: { system: "System default", en: "English", ja: "Japanese" } },
+		],
+	] as const)("defines %s as a native %s control", (key, type, details) => {
+		const definition = controlDefinitions(tab.getSettingDefinitions()).get(key);
+		expect(definition).toMatchObject({ name: expect.any(String), desc: expect.any(String) });
+		expect(definition?.control).toMatchObject({ key, type, ...details });
+	});
+
 	it("persists valid declarative control changes and rejects invalid values", () => {
 		tab.setControlValue("extractedFilesFolder", "my-folder");
 		tab.setControlValue("defaultNodeWidth", 600);
@@ -79,6 +100,44 @@ describe("SettingTab", () => {
 		});
 		expect(onSettingsChange).toHaveBeenCalledTimes(4);
 		expect(tab.update).toHaveBeenCalledOnce();
+	});
+
+	it.each([
+		["extractedFilesFolder", "my-folder"],
+		["defaultNodeWidth", 650],
+		["defaultNodeHeight", 550],
+		["fileNamePrefix", "Extract - "],
+		["showPreviewBeforeCreate", true],
+		["quickCardDefaultTitle", "New card"],
+		["enableEdgeSync", false],
+		["defaultEdgeColor", "3"],
+		["defaultEdgeLabel", "supports"],
+		["language", "ja"],
+	] as const)("persists %s through the declarative storage adapter", (key, value) => {
+		tab.setControlValue(key, value);
+		expect(settings[key]).toBe(value);
+		expect(tab.getControlValue(key)).toBe(value);
+		expect(onSettingsChange).toHaveBeenCalledOnce();
+	});
+
+	it.each([
+		["defaultNodeWidth", "600"],
+		["defaultNodeHeight", Number.NaN],
+		["showPreviewBeforeCreate", "true"],
+		["enableEdgeSync", 1],
+		["language", "fr"],
+		["fileNamePrefix", false],
+	] as const)("rejects invalid %s values at the storage boundary", (key, value) => {
+		const previous = settings[key];
+		tab.setControlValue(key, value);
+		expect(settings[key]).toBe(previous);
+		expect(onSettingsChange).not.toHaveBeenCalled();
+	});
+
+	it("regenerates translated definitions after changing language", () => {
+		tab.setControlValue("language", "ja");
+		expect(tab.update).toHaveBeenCalledOnce();
+		expect(groupHeading(tab.getSettingDefinitions()[0]!)).toBe("Graphune設定");
 	});
 
 	it("renders support destinations without opener access", () => {
