@@ -5,6 +5,7 @@
   "packageManager": "pnpm@10.7.0",
   "pnpm": {
     "overrides": {
+      "@parcel/watcher": "2.6.0",
       "tinypool": "2.1.2"
     }
   },
