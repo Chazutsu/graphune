@@ -7,10 +7,31 @@ uses Semantic Versioning with an initial `0.1.x` patch-only release policy.
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-10-13
+
+### Added
+
+- Added a local Obsidian policy check to pull-request and release gates while retaining Oxlint for
+  fast general linting and the official Obsidian scanner as an independent final check.
+- Added focused coverage for malformed drag payloads, draft-journal file validation, plugin unload
+  behavior, quick-card trash handling, and declarative settings behavior.
+
 ### Changed
 
-- Raised the minimum Obsidian version to 1.8.7 and replaced deprecated workspace and file APIs
-  with supported leaf and trash operations.
+- Raised the minimum Obsidian version to 1.13.0 and migrated settings to Obsidian's declarative API.
+- Replaced deprecated or unsupported workspace, file, DOM, timer, frontmatter, editor, and Canvas
+  integration patterns with supported or runtime-checked boundaries.
+- Validated external drag data, persisted unknown values, and thrown errors before use.
+- Pinned GitHub Actions to immutable revisions, adopted Node 24-compatible action runtimes, and
+  expanded TypeScript coverage for the official scanner.
+
+### Fixed
+
+- Respected the user's Obsidian trash preference when deleting files and stopped detaching plugin
+  leaves during unload.
+- Removed all local Obsidian policy findings without disabling rules.
+- Removed known vulnerable development dependency paths, including the transitive Tailwind watcher
+  path through `micromatch` and `braces`.
 
 ## [0.1.2] - 2026-10-13
 
@@ -67,7 +88,8 @@ uses Semantic Versioning with an initial `0.1.x` patch-only release policy.
 - Retained the legacy Obsidian plugin ID `obsidian-heptabase` so existing installations and settings
   continue to work.
 
-[Unreleased]: https://github.com/Chazutsu/graphune/compare/0.1.2...HEAD
+[Unreleased]: https://github.com/Chazutsu/graphune/compare/0.1.3...HEAD
+[0.1.3]: https://github.com/Chazutsu/graphune/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/Chazutsu/graphune/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/Chazutsu/graphune/compare/v0.1.0...0.1.1
 [0.1.0]: https://github.com/Chazutsu/graphune/releases/tag/v0.1.0
