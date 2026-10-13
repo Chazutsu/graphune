@@ -31,7 +31,7 @@ export function useKnowledgeContext(
 
 		let cancelled = false;
 		let controller: AbortController | undefined;
-		let timer: ReturnType<typeof setTimeout> | undefined;
+		let timer: number | undefined;
 		const refresh = () => {
 			const requestId = ++requestIdRef.current;
 			controller?.abort();
@@ -53,8 +53,8 @@ export function useKnowledgeContext(
 				});
 		};
 		const scheduleRefresh = () => {
-			if (timer) clearTimeout(timer);
-			timer = setTimeout(refresh, REFRESH_DEBOUNCE);
+			if (timer) window.clearTimeout(timer);
+			timer = window.setTimeout(refresh, REFRESH_DEBOUNCE);
 		};
 
 		refresh();
@@ -96,7 +96,7 @@ export function useKnowledgeContext(
 		return () => {
 			cancelled = true;
 			controller?.abort();
-			if (timer) clearTimeout(timer);
+			if (timer) window.clearTimeout(timer);
 			app.vault.offref(modifyRef);
 			app.vault.offref(deleteRef);
 			app.vault.offref(createRef);

@@ -15,7 +15,7 @@ export function showDropAnimation(
 
 	container.appendChild(el);
 
-	setTimeout(() => {
+	window.setTimeout(() => {
 		el.remove();
 	}, 300);
 }

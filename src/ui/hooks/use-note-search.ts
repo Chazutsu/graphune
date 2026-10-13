@@ -25,8 +25,8 @@ export function useNoteSearch(): NoteSearchState {
 	const [isSearching, setIsSearching] = useState(false);
 	const [isHydrating, setIsHydrating] = useState(false);
 	const [failedCount, setFailedCount] = useState(0);
-	const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const searchTimerRef = useRef<number | null>(null);
+	const refreshTimerRef = useRef<number | null>(null);
 	const requestIdRef = useRef(0);
 	const mountedRef = useRef(true);
 	const queryRef = useRef("");
@@ -69,8 +69,8 @@ export function useNoteSearch(): NoteSearchState {
 				setResults(parser.list());
 				setFailedCount(0);
 			}
-			if (refreshTimerRef.current !== null) clearTimeout(refreshTimerRef.current);
-			refreshTimerRef.current = setTimeout(() => {
+			if (refreshTimerRef.current !== null) window.clearTimeout(refreshTimerRef.current);
+			refreshTimerRef.current = window.setTimeout(() => {
 				refreshTimerRef.current = null;
 				if (queryRef.current !== "") void runSearch(queryRef.current, false);
 			}, VAULT_REFRESH_DEBOUNCE_MS);
@@ -104,7 +104,7 @@ export function useNoteSearch(): NoteSearchState {
 			const normalizedQuery = newQuery.trim();
 			queryRef.current = normalizedQuery;
 			setIsSearching(true);
-			if (searchTimerRef.current !== null) clearTimeout(searchTimerRef.current);
+			if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current);
 
 			if (normalizedQuery === "") {
 				requestIdRef.current += 1;
@@ -115,7 +115,7 @@ export function useNoteSearch(): NoteSearchState {
 				return;
 			}
 
-			searchTimerRef.current = setTimeout(() => {
+			searchTimerRef.current = window.setTimeout(() => {
 				searchTimerRef.current = null;
 				void runSearch(normalizedQuery);
 			}, SEARCH_DEBOUNCE_MS);
@@ -134,8 +134,8 @@ export function useNoteSearch(): NoteSearchState {
 
 	useEffect(() => {
 		return () => {
-			if (searchTimerRef.current !== null) clearTimeout(searchTimerRef.current);
-			if (refreshTimerRef.current !== null) clearTimeout(refreshTimerRef.current);
+			if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current);
+			if (refreshTimerRef.current !== null) window.clearTimeout(refreshTimerRef.current);
 		};
 	}, []);
 

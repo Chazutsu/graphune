@@ -84,6 +84,16 @@ describe("DropHandler", () => {
 		expect(canvasObserver.getActiveCanvasView).not.toHaveBeenCalled();
 	});
 
+	it.each([
+		JSON.stringify(null),
+		JSON.stringify({ type: "note-drag" }),
+		JSON.stringify({ type: "note-drag", filePath: 42 }),
+		JSON.stringify({ type: "text-selection-drag", filePath: "note.md", selectedText: 42 }),
+	])("rejects malformed drag payloads before accessing the canvas", async (data) => {
+		await handler.handleCanvasDrop(createMockDragEvent(data));
+		expect(canvasObserver.getActiveCanvasView).not.toHaveBeenCalled();
+	});
+
 	describe("note drop", () => {
 		it("adds file node to canvas on note-drag", async () => {
 			const file = new TFile("notes/test.md");

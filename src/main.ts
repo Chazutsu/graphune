@@ -61,7 +61,7 @@ export default class GraphunePlugin extends Plugin {
 		});
 
 		this.addRibbonIcon("list-tree", t("view.headingExplorer"), () => {
-			this.activateView();
+			void this.activateView().catch((error) => notifyError(t("notice.editorOpenFailed"), error));
 		});
 
 		this.addSettingTab(
@@ -82,7 +82,7 @@ export default class GraphunePlugin extends Plugin {
 		);
 
 		this.registerDomEvent(document, "drop", (evt: DragEvent) => {
-			this.dropHandler.handleCanvasDrop(evt);
+			void this.dropHandler.handleCanvasDrop(evt);
 		});
 
 		this.addCommand({
@@ -145,12 +145,12 @@ export default class GraphunePlugin extends Plugin {
 			id: "create-new-card",
 			name: t("command.createCard"),
 			callback: () => {
-				this.canvasEventHandler.createNewCardInViewport();
+				void this.canvasEventHandler.createNewCardInViewport();
 			},
 		});
 
 		this.registerDomEvent(document, "dblclick", (evt: MouseEvent) => {
-			this.canvasEventHandler.handleCanvasDblClick(evt);
+			void this.canvasEventHandler.handleCanvasDblClick(evt);
 		});
 
 		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
@@ -277,7 +277,7 @@ export default class GraphunePlugin extends Plugin {
 		const existing = this.app.workspace.getLeavesOfType(VIEW_TYPE_HEADING_EXPLORER);
 		const first = existing[0];
 		if (first) {
-			this.app.workspace.revealLeaf(first);
+			await this.app.workspace.revealLeaf(first);
 			return;
 		}
 
@@ -287,7 +287,7 @@ export default class GraphunePlugin extends Plugin {
 				type: VIEW_TYPE_HEADING_EXPLORER,
 				active: true,
 			});
-			this.app.workspace.revealLeaf(leaf);
+			await this.app.workspace.revealLeaf(leaf);
 		}
 	}
 
@@ -308,10 +308,7 @@ export default class GraphunePlugin extends Plugin {
 	private async loadSettings(): Promise<void> {
 		let data = (await this.loadData()) as Partial<StoredGraphuneData> | null;
 		if (!data) {
-			data = (await loadLegacyGraphuneData(
-				this.app.vault.adapter,
-				this.app.vault.configDir,
-			)) as Partial<StoredGraphuneData> | null;
+			data = await loadLegacyGraphuneData(this.app.vault.adapter, this.app.vault.configDir);
 			if (data) await this.saveData(data);
 		}
 		const { edgeSyncPendingDeletions, edgeSyncPendingRepairs, ...settings } = data ?? {};
@@ -350,7 +347,7 @@ export default class GraphunePlugin extends Plugin {
 					}
 				}
 			}
-			if (firstError) throw firstError;
+			if (firstError) throw normalizeError(firstError);
 		};
 		const queue = drain().finally(() => {
 			if (this.settingsSaveQueue === queue) this.settingsSaveQueue = null;
@@ -362,18 +359,18 @@ export default class GraphunePlugin extends Plugin {
 
 function normalizePendingDeletions(value: unknown): PendingCanvasDeletion[] {
 	if (!Array.isArray(value)) return [];
-	return value.flatMap((candidate) => {
+	return (value as unknown[]).flatMap((candidate) => {
 		if (!candidate || typeof candidate !== "object") return [];
-		const canvasPath = Reflect.get(candidate, "canvasPath");
-		const connections = Reflect.get(candidate, "connections");
+		const canvasPath = readProperty(candidate, "canvasPath");
+		const connections = readProperty(candidate, "connections");
 		if (typeof canvasPath !== "string" || !Array.isArray(connections)) return [];
-		const validConnections = connections.flatMap((connection) => {
+		const validConnections = (connections as unknown[]).flatMap((connection) => {
 			if (!connection || typeof connection !== "object") return [];
-			const from = Reflect.get(connection, "from");
-			const to = Reflect.get(connection, "to");
+			const from = readProperty(connection, "from");
+			const to = readProperty(connection, "to");
 			return typeof from === "string" && typeof to === "string" ? [{ from, to }] : [];
 		});
-		const fingerprint = Reflect.get(candidate, "fingerprint");
+		const fingerprint = readProperty(candidate, "fingerprint");
 		return validConnections.length > 0
 			? [
 					{
@@ -388,12 +385,12 @@ function normalizePendingDeletions(value: unknown): PendingCanvasDeletion[] {
 
 function normalizePendingRepairs(value: unknown): PendingConnectionRepair[] {
 	if (!Array.isArray(value)) return [];
-	return value.flatMap((candidate) => {
+	return (value as unknown[]).flatMap((candidate) => {
 		if (!candidate || typeof candidate !== "object") return [];
-		const id = Reflect.get(candidate, "id");
-		const connection = Reflect.get(candidate, "connection");
-		const mode = Reflect.get(candidate, "mode");
-		const phase = Reflect.get(candidate, "phase");
+		const id = readProperty(candidate, "id");
+		const connection = readProperty(candidate, "connection");
+		const mode = readProperty(candidate, "mode");
+		const phase = readProperty(candidate, "phase");
 		if (
 			typeof id !== "string" ||
 			!connection ||
@@ -402,10 +399,18 @@ function normalizePendingRepairs(value: unknown): PendingConnectionRepair[] {
 			(phase !== "apply" && phase !== "rollback")
 		)
 			return [];
-		const from = Reflect.get(connection, "from");
-		const to = Reflect.get(connection, "to");
+		const from = readProperty(connection, "from");
+		const to = readProperty(connection, "to");
 		return typeof from === "string" && typeof to === "string"
 			? [{ id, connection: { from, to }, mode, phase }]
 			: [];
 	});
+}
+
+function readProperty(value: object, key: string): unknown {
+	return Reflect.get(value, key) as unknown;
+}
+
+function normalizeError(error: unknown): Error {
+	return error instanceof Error ? error : new Error(String(error), { cause: error });
 }

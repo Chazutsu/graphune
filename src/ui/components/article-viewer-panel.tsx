@@ -211,8 +211,9 @@ export const ArticleViewerPanel = forwardRef<ArticleViewerPanelHandle>(
 				}
 				try {
 					await app.fileManager.processFrontMatter(selectedFile, (fm) => {
-						if (action === "delete") delete fm[key];
-						else fm[key] = value;
+						const frontmatter = fm as Record<string, unknown>;
+						if (action === "delete") delete frontmatter[key];
+						else frontmatter[key] = value;
 					});
 					refreshContent();
 				} catch (error) {
@@ -253,10 +254,10 @@ export const ArticleViewerPanel = forwardRef<ArticleViewerPanelHandle>(
 							frontmatter={metadata.frontmatter}
 							autoFocusTitle={shouldFocusTitle}
 							onTitleFocused={() => setShouldFocusTitle(false)}
-							onRename={handleRename}
-							onPropertyChange={handlePropertyChange}
-							onPropertyDelete={handlePropertyDelete}
-							onPropertyAdd={handlePropertyChange}
+							onRename={(title) => void handleRename(title)}
+							onPropertyChange={(key, value) => void handlePropertyChange(key, value)}
+							onPropertyDelete={(key) => void handlePropertyDelete(key)}
+							onPropertyAdd={(key, value) => void handlePropertyChange(key, value)}
 						/>
 						<ArticleEditor
 							key={`editor:${selectedFile.path}`}
