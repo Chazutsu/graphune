@@ -1,6 +1,6 @@
 # Graphune
 
-![Obsidian](https://img.shields.io/badge/Obsidian-%3E%3D1.5.0-blueviolet)
+![Obsidian](https://img.shields.io/badge/Obsidian-%3E%3D1.8.7-blueviolet)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 知識を調律する。GraphuneはVault内の見出しを、Obsidian Canvas上の空間的でつながりのあるワークスペースへ変換する。

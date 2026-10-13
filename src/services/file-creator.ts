@@ -50,7 +50,7 @@ export class FileCreator {
 	}
 
 	async removeFile(file: TFile): Promise<void> {
-		await this.app.vault.delete(file);
+		await this.app.fileManager.trashFile(file);
 	}
 
 	async createDistilledFile(

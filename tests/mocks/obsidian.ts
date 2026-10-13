@@ -93,6 +93,7 @@ export class FileManager {
 			},
 		);
 	renameFile = vi.fn().mockResolvedValue(undefined);
+	trashFile = vi.fn().mockResolvedValue(undefined);
 }
 
 export class Workspace {
@@ -101,7 +102,6 @@ export class Workspace {
 	getMostRecentLeaf = vi.fn().mockReturnValue(null);
 	on = vi.fn().mockReturnValue({ id: "workspace-event-ref" });
 	offref = vi.fn();
-	detachLeavesOfType = vi.fn();
 	getRightLeaf = vi.fn().mockReturnValue({
 		setViewState: vi.fn().mockResolvedValue(undefined),
 	});

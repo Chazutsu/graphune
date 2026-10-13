@@ -66,6 +66,19 @@ describe("EditorDraftJournal", () => {
 		expect((await journal.read("note.md"))?.value).toBe("safe");
 	});
 
+	it("does not treat a non-file Vault entry as the recovery journal", async () => {
+		files.set(".graphune/recovery/editor-drafts.json", { extension: "json" });
+		const journal = new EditorDraftJournal(app);
+
+		await journal.write("note.md", "safe", "pending");
+
+		expect(app.vault.process).not.toHaveBeenCalled();
+		expect(app.vault.create).toHaveBeenCalledWith(
+			".graphune/recovery/editor-drafts.json",
+			expect.any(String),
+		);
+	});
+
 	it("reports an unreadable journal without making the compatibility read throw", async () => {
 		const file = new TFile(".graphune/recovery/editor-drafts.json");
 		files.set(file.path, file);
