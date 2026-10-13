@@ -1,0 +1,22 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "react", "import", "unicorn"],
+	"categories": {
+		"correctness": "error",
+		"suspicious": "warn"
+	},
+	"rules": {
+		"typescript/no-explicit-any": "error",
+		"eslint/no-underscore-dangle": ["warn", { "allow": ["_loaded", "_containerEl"] }],
+		"no-new": "off",
+		"unicorn/no-empty-file": "off"
+	},
+	"ignorePatterns": [
+		"node_modules/",
+		"dist/",
+		"main.js",
+		"test-results/",
+		"tests/visual/dist/",
+		"tests/visual/test-results/"
+	]
+}

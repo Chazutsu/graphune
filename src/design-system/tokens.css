@@ -1,0 +1,57 @@
+.heptabase-shell,
+.heptabase-drag-ghost,
+.heptabase-selection-handle,
+.heptabase-drop-animation {
+	/* Obsidian theme values enter the product only through this token layer. */
+	--hb-paper: var(--background-primary, #ffffff);
+	--hb-mist: var(--background-secondary, #f1f3f5);
+	--hb-line: var(--background-modifier-border, #d9dce1);
+	--hb-ink: var(--text-normal, #202124);
+	--hb-muted: var(--text-muted, #6b7280);
+	--hb-faint: var(--text-faint, #9ca3af);
+	--hb-focus: var(--interactive-accent, #7c5cfc);
+	--hb-accent: var(--text-accent, var(--hb-focus));
+	--hb-on-accent: var(--text-on-accent, #ffffff);
+	--hb-danger: var(--text-error, #c33c54);
+	--hb-hover: var(--background-modifier-hover, #e9ecef);
+	--hb-title: var(--inline-title-color, var(--hb-ink));
+	--hb-title-font: var(--inline-title-font, var(--font-text));
+	--hb-metadata-label: var(--metadata-label-text-color, var(--hb-muted));
+	--hb-line-subtle: color-mix(in srgb, var(--hb-line) 52%, transparent);
+	--hb-line-strong: color-mix(in srgb, var(--hb-line) 72%, transparent);
+
+	--hb-space-1: 4px;
+	--hb-space-2: 8px;
+	--hb-space-3: 12px;
+	--hb-space-4: 16px;
+	--hb-space-5: 20px;
+
+	--hb-radius-control: 6px;
+	--hb-radius-card: 8px;
+	--hb-radius-pill: 999px;
+
+	--hb-font-caption: 11px;
+	--hb-font-ui: 12px;
+	--hb-font-label: 13px;
+
+	--hb-motion-instant: 80ms;
+	--hb-motion-fast: 120ms;
+	--hb-motion-panel: 180ms;
+	--hb-motion-drop: 300ms;
+	--hb-ease: cubic-bezier(0.2, 0, 0, 1);
+	--hb-fast: var(--hb-motion-fast);
+	--hb-shadow-floating: 0 8px 24px rgb(0 0 0 / 18%);
+	--hb-z-floating: 1000;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.heptabase-shell,
+	.heptabase-drag-ghost,
+	.heptabase-selection-handle,
+	.heptabase-drop-animation {
+		--hb-motion-instant: 0ms;
+		--hb-motion-fast: 0ms;
+		--hb-motion-panel: 0ms;
+		--hb-motion-drop: 0ms;
+	}
+}
