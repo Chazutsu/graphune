@@ -5,7 +5,7 @@
 
 知識を調律する。GraphuneはVault内の見出しを、Obsidian Canvas上の空間的でつながりのあるワークスペースへ変換する。
 
-> 互換性維持のため、ObsidianプラグインIDは`obsidian-heptabase`のままである。既存のインストールと設定は引き続き利用できる。
+> 0.1.2から、Community Directoryの要件に合わせてObsidianプラグインIDを`graphune`へ変更した。旧`obsidian-heptabase`配下の設定は初回起動時に取り込む。
 
 [English](../README.md)
 
@@ -45,7 +45,7 @@ Vault内の見出しセクションを抽出してCanvas上に個別のノート
    ```
 3. `main.js`、`manifest.json`、`styles.css`（存在する場合）を Vault のプラグインディレクトリにコピー：
    ```
-   <vault>/.obsidian/plugins/obsidian-heptabase/
+   <vault>/.obsidian/plugins/graphune/
    ```
 4. Obsidian を再起動し、設定 > コミュニティプラグイン でプラグインを有効化
 
@@ -116,6 +116,18 @@ pnpm open:device
 初回のみObsidianの「保管庫としてフォルダを開く」から `.dev/ux-audit-vault` を選び、ローカルVaultを信頼して `Graphune` を有効化する。以後は `pnpm open:device` で直接開ける。
 
 `UX監査Canvas.canvas` と `UX監査チェックリスト.md` を使い、ライト・ダーク、狭幅、キーボード、検索、ドラッグ&ドロップを確認する。反復開発中は `pnpm dev` を実行する。Hot Reloadを使わない場合は、Obsidianの「設定 → コミュニティプラグイン → プラグインの再読み込み」で最新ビルドを反映する。
+
+### 0.1.1以前からの移行
+
+Community Directoryでは、ID変更を同じプラグインの更新として扱えない。旧Graphuneを無効化し、0.1.2を`.obsidian/plugins/graphune/`へインストールしてからGraphuneを再度有効化する。新ID側に設定がない場合に限り、初回起動時に`.obsidian/plugins/obsidian-heptabase/data.json`を取り込む。
+
+手動・開発環境では次のコマンドで設定コピーと`community-plugins.json`のID置換を実行できる。
+
+```bash
+pnpm migrate:legacy -- --vault <vault-path>
+```
+
+旧プラグインフォルダは削除せず、`community-plugins.json`のバックアップも作る。0.1.2の動作確認後に旧フォルダを削除すること。旧IDに属するWorkspace配置は一度開き直す必要がある場合があるが、ノートとCanvasは変更しない。
 
 ## コントリビューション
 

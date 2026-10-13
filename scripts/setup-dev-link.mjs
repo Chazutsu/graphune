@@ -10,7 +10,7 @@ import {
 import { join, resolve } from "node:path";
 
 const projectRoot = resolve(import.meta.dirname, "..");
-const PLUGIN_NAME = "obsidian-heptabase";
+const PLUGIN_NAME = "graphune";
 
 const vaultPath = process.argv[2] ? resolve(process.argv[2]) : null;
 if (!vaultPath) {

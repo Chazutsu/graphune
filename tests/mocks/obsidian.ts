@@ -78,7 +78,9 @@ export class Vault {
 	offref = vi.fn();
 	adapter = {
 		exists: vi.fn().mockResolvedValue(false),
+		read: vi.fn().mockResolvedValue(""),
 	};
+	configDir = ".obsidian";
 }
 
 export class FileManager {
