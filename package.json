@@ -22,6 +22,7 @@
   "scripts": {
     "dev": "node scripts/dev-watch.mjs",
     "build": "BUILD=production rolldown -c && tailwindcss -i src/styles.css -o styles.css --minify",
+    "check:toolchain": "node scripts/check-toolchain-compat.mjs",
     "check:deploy": "pnpm build && node scripts/deploy.mjs --check",
     "deploy": "pnpm build && node scripts/deploy.mjs",
     "migrate:legacy": "node scripts/migrate-legacy-install.mjs",
