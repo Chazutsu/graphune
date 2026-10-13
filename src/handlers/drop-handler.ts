@@ -24,12 +24,14 @@ export class DropHandler {
 			return;
 		}
 
-		let dragData: DragData;
+		let candidate: unknown;
 		try {
-			dragData = JSON.parse(data);
+			candidate = JSON.parse(data) as unknown;
 		} catch {
 			return;
 		}
+		const dragData = parseDragData(candidate);
+		if (!dragData) return;
 
 		if (dragData.type === "note-drag") {
 			await this.handleNoteDrop(evt, dragData);
@@ -104,15 +106,11 @@ export class DropHandler {
 				this.previewBridge.requestPreview(
 					[previewItem],
 					[dragData.selectedText],
-					async (selectedIndices: number[]) => {
+					(selectedIndices: number[]) => {
 						if (selectedIndices.length === 0) {
 							return;
 						}
-						try {
-							await createNode();
-						} catch (error) {
-							notifyError(t("notice.createNoteFailed"), error);
-						}
+						void createNode().catch((error) => notifyError(t("notice.createNoteFailed"), error));
 					},
 					() => {},
 				);
@@ -135,4 +133,24 @@ export class DropHandler {
 		}
 		return firstLine.slice(0, 50);
 	}
+}
+
+function parseDragData(value: unknown): DragData | null {
+	if (!value || typeof value !== "object") return null;
+	const type = Reflect.get(value, "type") as unknown;
+	const filePath = Reflect.get(value, "filePath") as unknown;
+	if (typeof filePath !== "string") return null;
+	if (type === "note-drag") return { type, filePath };
+	if (type !== "text-selection-drag") return null;
+	const selectedText = Reflect.get(value, "selectedText") as unknown;
+	const title = Reflect.get(value, "title") as unknown;
+	const sourceHeading = Reflect.get(value, "sourceHeading") as unknown;
+	if (typeof selectedText !== "string" || typeof title !== "string") return null;
+	return {
+		type,
+		filePath,
+		selectedText,
+		title,
+		...(typeof sourceHeading === "string" ? { sourceHeading } : {}),
+	};
 }

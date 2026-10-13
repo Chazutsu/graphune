@@ -69,9 +69,11 @@ export function EditorRecoveryNotice(props: EditorRecoveryNoticeProps): React.Re
 				</button>
 				<button
 					type="button"
-					onClick={async () => {
-						await navigator.clipboard.writeText(props.draft.value);
-						setCopied(true);
+					onClick={() => {
+						void navigator.clipboard.writeText(props.draft.value).then(
+							() => setCopied(true),
+							() => undefined,
+						);
 					}}
 				>
 					{copied ? t("article.recoveryCopied") : t("article.recoveryCopy")}

@@ -272,6 +272,7 @@ export class Setting {
 	}
 
 	setName = vi.fn().mockReturnThis();
+	setHeading = vi.fn().mockReturnThis();
 	setDesc = vi.fn().mockReturnThis();
 	addText = vi.fn().mockImplementation((cb: (text: Setting) => void) => {
 		cb(this);

@@ -19,11 +19,11 @@ export function useFileSearch(): UseFileSearchReturn {
 	const searchSettled = normalizedQuery === "" || debouncedQuery === normalizedQuery;
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
+		const timer = window.setTimeout(() => {
 			setDebouncedQuery(normalizedQuery);
 		}, SEARCH_DEBOUNCE_MS);
 		return () => {
-			clearTimeout(timer);
+			window.clearTimeout(timer);
 		};
 	}, [normalizedQuery]);
 

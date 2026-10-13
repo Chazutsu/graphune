@@ -25,9 +25,9 @@ export class SettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		containerEl.createEl("h2", { text: t("settings.title") });
+		new Setting(containerEl).setName(t("settings.title")).setHeading();
 
-		containerEl.createEl("h2", { text: t("settings.files") });
+		new Setting(containerEl).setName(t("settings.files")).setHeading();
 
 		new Setting(containerEl)
 			.setName(t("settings.extractedFolder.name"))
@@ -46,7 +46,6 @@ export class SettingTab extends PluginSettingTab {
 				slider
 					.setLimits(200, 800, 50)
 					.setValue(this.settings.defaultNodeWidth)
-					.setDynamicTooltip()
 					.onChange(this.updateSetting("defaultNodeWidth")),
 			);
 
@@ -57,7 +56,6 @@ export class SettingTab extends PluginSettingTab {
 				slider
 					.setLimits(100, 600, 50)
 					.setValue(this.settings.defaultNodeHeight)
-					.setDynamicTooltip()
 					.onChange(this.updateSetting("defaultNodeHeight")),
 			);
 
@@ -80,7 +78,7 @@ export class SettingTab extends PluginSettingTab {
 					.onChange(this.updateSetting("showPreviewBeforeCreate")),
 			);
 
-		containerEl.createEl("h2", { text: t("settings.quickCard") });
+		new Setting(containerEl).setName(t("settings.quickCard")).setHeading();
 
 		new Setting(containerEl)
 			.setName(t("settings.quickCardTitle.name"))
@@ -92,7 +90,7 @@ export class SettingTab extends PluginSettingTab {
 					.onChange(this.updateSetting("quickCardDefaultTitle")),
 			);
 
-		containerEl.createEl("h2", { text: t("settings.edgeSync") });
+		new Setting(containerEl).setName(t("settings.edgeSync")).setHeading();
 
 		new Setting(containerEl)
 			.setName(t("settings.edgeSync.name"))
@@ -103,7 +101,7 @@ export class SettingTab extends PluginSettingTab {
 					.onChange(this.updateSetting("enableEdgeSync")),
 			);
 
-		containerEl.createEl("h2", { text: t("settings.edges") });
+		new Setting(containerEl).setName(t("settings.edges")).setHeading();
 
 		new Setting(containerEl)
 			.setName(t("settings.edgeColor.name"))
@@ -145,7 +143,7 @@ export class SettingTab extends PluginSettingTab {
 					}),
 			);
 
-		containerEl.createEl("h2", { text: t("settings.support") });
+		new Setting(containerEl).setName(t("settings.support")).setHeading();
 		containerEl.createEl("p", { text: t("settings.support.description") });
 		containerEl.createEl("a", {
 			text: t("settings.support.donate"),

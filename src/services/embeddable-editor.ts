@@ -79,16 +79,16 @@ function registerWorkspaceFocusGuard(
 	return {
 		setFocused: (focused) => {
 			if (!registered) return;
-			if (focused) guard!.focusedInstances.add(instance);
-			else guard!.focusedInstances.delete(instance);
+			if (focused) guard.focusedInstances.add(instance);
+			else guard.focusedInstances.delete(instance);
 		},
 		unregister: () => {
 			if (!registered) return;
 			registered = false;
-			guard!.focusedInstances.delete(instance);
-			guard!.instances.delete(instance);
-			if (guard!.instances.size > 0) return;
-			if (workspace.setActiveLeaf === guard!.wrapper) workspace.setActiveLeaf = guard!.original;
+			guard.focusedInstances.delete(instance);
+			guard.instances.delete(instance);
+			if (guard.instances.size > 0) return;
+			if (workspace.setActiveLeaf === guard.wrapper) workspace.setActiveLeaf = guard.original;
 			workspaceFocusGuards.delete(app.workspace);
 		},
 	};

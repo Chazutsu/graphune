@@ -7,7 +7,7 @@ import { notifyError } from "@/utils/notify-error";
 import { t } from "@/i18n";
 import { EditorDraftJournal, type EditorDraftReason } from "@/services/editor-draft-journal";
 import type { EditorView } from "@codemirror/view";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { useApp } from "./use-app";
 
 interface UseEmbeddableEditorProps {
@@ -33,7 +33,7 @@ export interface EditorRecoveryDraft {
 }
 
 interface UseEmbeddableEditorReturn {
-	containerRef: React.RefObject<HTMLDivElement | null>;
+	containerRef: RefObject<HTMLDivElement | null>;
 	editorView: EditorView | null;
 	recoveryStatus: "loading" | "idle" | "recovered" | "error";
 	recoveryDraft: EditorRecoveryDraft | null;
@@ -186,11 +186,11 @@ export function useEmbeddableEditor({
 		const options: EmbeddableEditorOptions = {
 			value: pendingDrafts.get(resourceKey) ?? contentRef.current,
 			onBlur: (editor: EmbeddableEditorHandle) => {
-				clearTimeout(debounceTimerRef.current);
+				window.clearTimeout(debounceTimerRef.current);
 				enqueueSave(editor.value);
 			},
 			onChange: (editor: EmbeddableEditorHandle) => {
-				clearTimeout(debounceTimerRef.current);
+				window.clearTimeout(debounceTimerRef.current);
 				dirtyValueRef.current = editor.value;
 				pendingDrafts.set(resourceKey, editor.value);
 				void journal.writeCoalesced(resourceKey, editor.value, "pending").catch(() => undefined);
@@ -233,7 +233,7 @@ export function useEmbeddableEditor({
 
 		return () => {
 			cancelled = true;
-			clearTimeout(debounceTimerRef.current);
+			window.clearTimeout(debounceTimerRef.current);
 			if (dirtyValueRef.current !== null) enqueueSave(dirtyValueRef.current);
 			editor.destroy();
 			editorRef.current = null;

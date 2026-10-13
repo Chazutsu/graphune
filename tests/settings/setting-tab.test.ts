@@ -57,20 +57,20 @@ describe("SettingTab", () => {
 			expect(tab.containerEl.empty).toHaveBeenCalled();
 		});
 
-		it("creates h2 headers via createEl", () => {
+		it("creates section headings via the native Setting API", () => {
 			tab.display();
-			const createElMock = vi.mocked(tab.containerEl.createEl);
-			const h2Calls = createElMock.mock.calls.filter((call) => call[0] === "h2");
-			expect(h2Calls.length).toBeGreaterThanOrEqual(1);
-			expect(h2Calls[0]).toEqual(["h2", { text: "Graphune settings" }]);
+			const headings = settingInstances.filter(
+				(instance) => vi.mocked(instance.setHeading).mock.calls.length > 0,
+			);
+			expect(headings).toHaveLength(6);
+			expect(headings[0].setName).toHaveBeenCalledWith("Graphune settings");
 		});
 
 		it("creates all section headers", () => {
 			tab.display();
-			const createElMock = vi.mocked(tab.containerEl.createEl);
-			const h2Texts = createElMock.mock.calls
-				.filter((call) => call[0] === "h2")
-				.map((call) => (call[1] as Record<string, string> | undefined)?.text);
+			const h2Texts = settingInstances
+				.filter((instance) => vi.mocked(instance.setHeading).mock.calls.length > 0)
+				.map((instance) => vi.mocked(instance.setName).mock.calls[0]?.[0]);
 			expect(h2Texts).toContain("Graphune settings");
 			expect(h2Texts).toContain("Extracted files");
 			expect(h2Texts).toContain("Quick cards");
@@ -95,14 +95,17 @@ describe("SettingTab", () => {
 			});
 		});
 
-		it("creates 10 Setting instances", () => {
+		it("creates settings and six section headings", () => {
 			tab.display();
-			expect(settingInstances).toHaveLength(10);
+			expect(settingInstances).toHaveLength(16);
 		});
 
 		it("calls setName and setDesc on all Settings", () => {
 			tab.display();
-			for (const instance of settingInstances) {
+			const controls = settingInstances.filter(
+				(instance) => vi.mocked(instance.setHeading).mock.calls.length === 0,
+			);
+			for (const instance of controls) {
 				expect(instance.setName).toHaveBeenCalled();
 				expect(instance.setDesc).toHaveBeenCalled();
 			}
@@ -112,7 +115,7 @@ describe("SettingTab", () => {
 	describe("updateSetting via onChange callbacks", () => {
 		it("updates extractedFilesFolder (text - Setting #0)", () => {
 			tab.display();
-			const instance = settingInstances[0];
+			const instance = settingInstances[2];
 			expect(instance.addText).toHaveBeenCalled();
 			expect(instance.setPlaceholder).toHaveBeenCalledWith("e.g. extracted-notes");
 			expect(instance.setValue).toHaveBeenCalledWith(DEFAULT_SETTINGS.extractedFilesFolder);
@@ -125,11 +128,10 @@ describe("SettingTab", () => {
 
 		it("updates defaultNodeWidth (slider - Setting #1)", () => {
 			tab.display();
-			const instance = settingInstances[1];
+			const instance = settingInstances[3];
 			expect(instance.addSlider).toHaveBeenCalled();
 			expect(instance.setLimits).toHaveBeenCalledWith(200, 800, 50);
 			expect(instance.setValue).toHaveBeenCalledWith(DEFAULT_SETTINGS.defaultNodeWidth);
-			expect(instance.setDynamicTooltip).toHaveBeenCalled();
 
 			const onChange = getOnChangeCallback(instance);
 			onChange(600 as never);
@@ -139,7 +141,7 @@ describe("SettingTab", () => {
 
 		it("updates defaultNodeHeight (slider - Setting #2)", () => {
 			tab.display();
-			const instance = settingInstances[2];
+			const instance = settingInstances[4];
 			expect(instance.addSlider).toHaveBeenCalled();
 			expect(instance.setLimits).toHaveBeenCalledWith(100, 600, 50);
 			expect(instance.setValue).toHaveBeenCalledWith(DEFAULT_SETTINGS.defaultNodeHeight);
@@ -152,7 +154,7 @@ describe("SettingTab", () => {
 
 		it("updates fileNamePrefix (text - Setting #3)", () => {
 			tab.display();
-			const instance = settingInstances[3];
+			const instance = settingInstances[5];
 			expect(instance.addText).toHaveBeenCalled();
 			expect(instance.setPlaceholder).toHaveBeenCalledWith("e.g. extracted-");
 
@@ -164,7 +166,7 @@ describe("SettingTab", () => {
 
 		it("updates showPreviewBeforeCreate (toggle - Setting #4)", () => {
 			tab.display();
-			const instance = settingInstances[4];
+			const instance = settingInstances[6];
 			expect(instance.addToggle).toHaveBeenCalled();
 
 			const onChange = getOnChangeCallback(instance);
@@ -175,7 +177,7 @@ describe("SettingTab", () => {
 
 		it("updates quickCardDefaultTitle (text - Setting #5)", () => {
 			tab.display();
-			const instance = settingInstances[5];
+			const instance = settingInstances[8];
 			expect(instance.addText).toHaveBeenCalled();
 			expect(instance.setPlaceholder).toHaveBeenCalledWith("e.g. Untitled");
 
@@ -187,7 +189,7 @@ describe("SettingTab", () => {
 
 		it("updates enableEdgeSync (toggle - Setting #6)", () => {
 			tab.display();
-			const instance = settingInstances[6];
+			const instance = settingInstances[10];
 			expect(instance.addToggle).toHaveBeenCalled();
 
 			const onChange = getOnChangeCallback(instance);
@@ -198,7 +200,7 @@ describe("SettingTab", () => {
 
 		it("updates defaultEdgeColor (text - Setting #7)", () => {
 			tab.display();
-			const instance = settingInstances[7];
+			const instance = settingInstances[12];
 			expect(instance.addText).toHaveBeenCalled();
 			expect(instance.setPlaceholder).toHaveBeenCalledWith("e.g. 1");
 
@@ -210,7 +212,7 @@ describe("SettingTab", () => {
 
 		it("updates defaultEdgeLabel (text - Setting #8)", () => {
 			tab.display();
-			const instance = settingInstances[8];
+			const instance = settingInstances[13];
 			expect(instance.addText).toHaveBeenCalled();
 			expect(instance.setPlaceholder).toHaveBeenCalledWith("e.g. relates to");
 
@@ -222,7 +224,7 @@ describe("SettingTab", () => {
 
 		it("updates language (dropdown - Setting #9)", () => {
 			tab.display();
-			const instance = settingInstances[9];
+			const instance = settingInstances[14];
 			expect(instance.addDropdown).toHaveBeenCalled();
 			expect(instance.setValue).toHaveBeenCalledWith("system");
 
