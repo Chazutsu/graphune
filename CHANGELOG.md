@@ -7,6 +7,20 @@ uses Semantic Versioning with an initial `0.1.x` patch-only release policy.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-13
+
+### Changed
+
+- Changed the Obsidian plugin ID from `obsidian-heptabase` to `graphune` for Community Directory
+  compatibility ([#3]).
+
+### Added
+
+- Added first-launch legacy settings import and a safe manual migration command that preserves the
+  old installation while replacing its enabled-plugin entry ([#3]).
+- Documented the one-time reinstall and workspace limitations caused by an Obsidian plugin ID
+  change ([#3]).
+
 ## [0.1.1] - 2026-10-13
 
 ### Added
@@ -48,8 +62,10 @@ uses Semantic Versioning with an initial `0.1.x` patch-only release policy.
 - Retained the legacy Obsidian plugin ID `obsidian-heptabase` so existing installations and settings
   continue to work.
 
-[Unreleased]: https://github.com/Chazutsu/graphune/compare/0.1.1...HEAD
+[Unreleased]: https://github.com/Chazutsu/graphune/compare/0.1.2...HEAD
+[0.1.2]: https://github.com/Chazutsu/graphune/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/Chazutsu/graphune/compare/v0.1.0...0.1.1
 [0.1.0]: https://github.com/Chazutsu/graphune/releases/tag/v0.1.0
 [#1]: https://github.com/Chazutsu/graphune/issues/1
 [#2]: https://github.com/Chazutsu/graphune/issues/2
+[#3]: https://github.com/Chazutsu/graphune/issues/3

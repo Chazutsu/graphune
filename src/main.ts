@@ -3,6 +3,7 @@ import { CommandHandler } from "@/handlers/command-handler";
 import { DropHandler } from "@/handlers/drop-handler";
 import { setLocale, t } from "@/i18n";
 import { type Services, createServices } from "@/services/service-registry";
+import { loadLegacyGraphuneData } from "@/services/legacy-settings-migration";
 import type {
 	EdgeSyncPersistentState,
 	PendingCanvasDeletion,
@@ -303,7 +304,14 @@ export default class GraphunePlugin extends Plugin {
 	}
 
 	private async loadSettings(): Promise<void> {
-		const data = (await this.loadData()) as Partial<StoredGraphuneData> | null;
+		let data = (await this.loadData()) as Partial<StoredGraphuneData> | null;
+		if (!data) {
+			data = (await loadLegacyGraphuneData(
+				this.app.vault.adapter,
+				this.app.vault.configDir,
+			)) as Partial<StoredGraphuneData> | null;
+			if (data) await this.saveData(data);
+		}
 		const { edgeSyncPendingDeletions, edgeSyncPendingRepairs, ...settings } = data ?? {};
 		this.pendingEdgeDeletions = normalizePendingDeletions(edgeSyncPendingDeletions);
 		this.pendingEdgeRepairs = normalizePendingRepairs(edgeSyncPendingRepairs);

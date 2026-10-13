@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { collectArtifactSet, deployPluginTargets, validateObsidianManifest } from "obsidian-plugin-kit/deploy";
+import { migrateLegacyInstall } from "./migrate-legacy-install.mjs";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const donateUrl = "https://github.com/sponsors/ryo-ebata";
@@ -14,12 +15,12 @@ const vaults = process.argv.flatMap((argument, index, arguments_) =>
 	argument === "--vault" && arguments_[index + 1] ? [path.resolve(arguments_[index + 1])] : [],
 );
 const targets = vaults.map((vault) =>
-	path.join(vault, ".obsidian", "plugins", "obsidian-heptabase"),
+	path.join(vault, ".obsidian", "plugins", "graphune"),
 );
 
 const manifest = JSON.parse(await readFile(path.join(projectRoot, "manifest.json"), "utf8"));
 const versions = JSON.parse(await readFile(path.join(projectRoot, "versions.json"), "utf8"));
-validateObsidianManifest({ manifest, versions, expectedId: "obsidian-heptabase" });
+validateObsidianManifest({ manifest, versions, expectedId: "graphune" });
 
 const { sourceFiles, digests } = await collectArtifactSet({ source: projectRoot });
 
@@ -41,4 +42,8 @@ await deployPluginTargets({
 	pluginId: manifest.id,
 	log: (target) => console.log(`deployed and enabled ${manifest.id}@${manifest.version} -> ${target}`),
 });
+for (const vault of vaults) {
+	const changes = await migrateLegacyInstall(vault);
+	if (changes.length > 0) console.log(`migrated ${vault}: ${changes.join(", ")}`);
+}
 printSupportLinks();

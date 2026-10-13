@@ -65,6 +65,25 @@ describe("GraphunePlugin lifecycle", () => {
 		);
 	});
 
+	it("imports legacy settings once when the new plugin has no data", async () => {
+		app.vault.adapter.exists.mockResolvedValue(true);
+		app.vault.adapter.read.mockResolvedValue(
+			JSON.stringify({ language: "ja", defaultNodeWidth: 620 }),
+		);
+
+		await plugin.onload();
+
+		expect(app.vault.adapter.read).toHaveBeenCalledWith(
+			".obsidian/plugins/obsidian-heptabase/data.json",
+		);
+		expect(plugin.saveData).toHaveBeenCalledWith(
+			expect.objectContaining({ language: "ja", defaultNodeWidth: 620 }),
+		);
+		expect(plugin.settings).toEqual(
+			expect.objectContaining({ language: "ja", defaultNodeWidth: 620 }),
+		);
+	});
+
 	it("handles an edge sync rejection from the vault modify listener", async () => {
 		plugin.loadData = vi.fn().mockResolvedValue({ enableEdgeSync: true });
 		services.edgeSync.onCanvasModified.mockRejectedValueOnce(new Error("write failed"));

@@ -42,7 +42,7 @@ Low-friction rearrangement is more important than adding more commands.
 - Interaction feedback must be immediate and quiet.
 `],
 	["Projects/Product Direction.md", `---
-tags: [project/obsidian-heptabase, product]
+tags: [project/graphune, product]
 status: in-progress
 priority: high
 ---
@@ -125,7 +125,7 @@ const workspace = {
 	main: { id: "ux-audit-main", type: "split", children: [{ id: "ux-audit-tabs", type: "tabs", children: [{ id: "ux-audit-canvas-leaf", type: "leaf", state: { type: "canvas", state: { file: "UX監査Canvas.canvas", viewState: { x: 430, y: 250, zoom: -1.25 } }, icon: "lucide-layout-dashboard", title: "UX監査Canvas" } }] }], direction: "vertical" },
 	left: { id: "ux-audit-left", type: "split", children: [{ id: "ux-audit-left-tabs", type: "tabs", children: [{ id: "ux-audit-files", type: "leaf", state: { type: "file-explorer", state: { sortOrder: "alphabetical", autoReveal: false, showSearch: false, searchQuery: "" }, icon: "lucide-folder-closed", title: "Files" } }] }], direction: "horizontal", width: 280 },
 	right: { id: "ux-audit-right", type: "split", children: [{ id: "ux-audit-right-tabs", type: "tabs", children: [{ id: "ux-audit-plugin", type: "leaf", state: { type: "heading-explorer-view", state: {}, icon: "layout-grid", title: "Heading Explorer" } }], currentTab: 0 }], direction: "horizontal", width: 380 },
-	"left-ribbon": { hiddenItems: { "obsidian-heptabase:Heading Explorer": false } },
+	"left-ribbon": { hiddenItems: { "graphune:Heading Explorer": false } },
 	active: "ux-audit-plugin",
 	lastOpenFiles: ["UX監査Canvas.canvas", "UX監査チェックリスト.md", "Projects/Product Direction.md"],
 };
@@ -138,7 +138,7 @@ for (const [relativePath, contents] of files) {
 
 mkdirSync(join(obsidianDir, "plugins"), { recursive: true });
 writeFileSync(join(vaultPath, "UX監査Canvas.canvas"), `${JSON.stringify(canvas, null, "\t")}\n`, "utf8");
-writeFileSync(join(obsidianDir, "community-plugins.json"), `${JSON.stringify(["obsidian-heptabase"], null, "\t")}\n`, "utf8");
+writeFileSync(join(obsidianDir, "community-plugins.json"), `${JSON.stringify(["graphune"], null, "\t")}\n`, "utf8");
 writeFileSync(join(obsidianDir, "core-plugins.json"), `${JSON.stringify({ "file-explorer": true, search: true, canvas: true, outline: true, backlinks: true, "outgoing-link": true, "tag-pane": true, properties: true, bookmarks: true, "command-palette": true }, null, "\t")}\n`, "utf8");
 writeFileSync(join(obsidianDir, "appearance.json"), "{}\n", "utf8");
 writeFileSync(join(obsidianDir, "app.json"), "{}\n", "utf8");

@@ -5,7 +5,8 @@
 
 Tune your knowledge. Graphune turns vault headings into a spatial, connected workspace on Obsidian Canvas.
 
-> Compatibility: the Obsidian plugin ID remains `obsidian-heptabase` so existing installations and settings continue to work.
+> Since 0.1.2, the Obsidian plugin ID is `graphune`, as required for Community Directory submission.
+> Existing settings are imported from the former `obsidian-heptabase` directory on first launch.
 
 [Japanese](docs/README.ja.md)
 
@@ -45,7 +46,7 @@ Graphune lets you extract heading sections from your vault and place them onto C
    ```
 3. Copy `main.js`, `manifest.json`, and `styles.css` (if present) to your vault's plugin directory:
    ```
-   <vault>/.obsidian/plugins/obsidian-heptabase/
+   <vault>/.obsidian/plugins/graphune/
    ```
 4. Restart Obsidian and enable the plugin in Settings > Community Plugins
 
@@ -119,13 +120,31 @@ pnpm setup:device
 pnpm open:device
 ```
 
-The generated `.dev/ux-audit-vault` enables `obsidian-heptabase`, opens the localized audit Canvas,
+The generated `.dev/ux-audit-vault` enables `graphune`, opens the localized audit Canvas,
 and restores the Heading Explorer in a 380 px right sidebar. Its notes cover folders, hierarchical
 tags, Japanese text, long titles, dense Canvas content, and empty, search, and filter states. Use the
 included audit checklist for light and dark themes, narrow widths, keyboard operation, and
 continuous use. For iterative development, keep the vault open and run `pnpm dev`.
 
 Obsidian requires one manual registration on first use: choose **Open folder as vault**, select `.dev/ux-audit-vault`, trust the local vault, and enable **Graphune**. After that, `pnpm open:device` opens it directly.
+
+### Migrating from 0.1.1 or earlier
+
+The Community Directory cannot treat a changed plugin ID as an in-place update. Disable the old
+Graphune installation, install or copy 0.1.2 into `.obsidian/plugins/graphune/`, then enable
+Graphune again. On first launch, Graphune imports `data.json` from
+`.obsidian/plugins/obsidian-heptabase/` only when the new installation has no data of its own.
+
+For a manual or development installation, the following command copies settings and replaces the
+enabled plugin ID in `community-plugins.json`:
+
+```bash
+pnpm migrate:legacy -- --vault <vault-path>
+```
+
+The command keeps the old plugin directory and backs up `community-plugins.json`. Remove the old
+directory only after verifying Graphune 0.1.2. Workspace layout entries owned by the old plugin ID
+may need to be reopened once; note and Canvas content is unaffected.
 
 ## Support
 
