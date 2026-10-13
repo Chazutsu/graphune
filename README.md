@@ -1,6 +1,6 @@
 # Graphune
 
-![Obsidian](https://img.shields.io/badge/Obsidian-%3E%3D1.8.7-blueviolet)
+![Obsidian](https://img.shields.io/badge/Obsidian-%3E%3D1.13.0-blueviolet)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 Tune your knowledge. Graphune turns vault headings into a spatial, connected workspace on Obsidian Canvas.
@@ -36,24 +36,26 @@ Graphune lets you extract heading sections from your vault and place them onto C
 
 ## Installation
 
+### Community plugins
+
+1. Open **Settings > Community plugins** in Obsidian
+2. Select **Browse**, search for **Graphune**, and select **Install**
+3. Select **Enable** after installation
+
 ### Manual
 
-1. Clone or download this repository
-2. Install dependencies and build:
-   ```bash
-   pnpm install
-   pnpm build
-   ```
-3. Copy `main.js`, `manifest.json`, and `styles.css` (if present) to your vault's plugin directory:
+1. Download `main.js`, `manifest.json`, and `styles.css` from the
+   [latest release](https://github.com/Chazutsu/graphune/releases/latest)
+2. Create the plugin directory in your vault and copy the three files into it:
    ```
    <vault>/.obsidian/plugins/graphune/
    ```
-4. Restart Obsidian and enable the plugin in Settings > Community Plugins
+3. Restart Obsidian and enable Graphune in **Settings > Community plugins**
 
 ## Usage
 
 1. Open a Canvas in Obsidian
-2. Click the **list-tree** icon in the ribbon (left sidebar) to open the Heading Explorer
+2. Select the **Open heading explorer** ribbon icon to open the Heading Explorer
 3. Browse or search for notes in the explorer panel
 4. Expand a note to see its heading hierarchy
 5. Drag a heading onto the Canvas — a new note is created with the extracted section content
