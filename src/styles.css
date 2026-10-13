@@ -2443,6 +2443,48 @@
 	min-height: 150px;
 	resize: vertical;
 }
+.distillation-dialog__combobox {
+	position: relative;
+}
+.distillation-dialog__combobox ul {
+	position: absolute;
+	z-index: 2;
+	inset: calc(100% + 4px) 0 auto;
+	max-height: min(280px, 40dvh);
+	margin: 0;
+	padding: 4px;
+	overflow-y: auto;
+	list-style: none;
+	background: var(--hb-paper);
+	border: 1px solid var(--hb-line);
+	border-radius: var(--hb-radius-control);
+	box-shadow: var(--hb-shadow-floating);
+}
+.distillation-dialog__combobox li {
+	display: grid;
+	gap: 2px;
+	padding: 8px 10px;
+	border-radius: var(--hb-radius-control);
+	cursor: pointer;
+}
+.distillation-dialog__combobox li[data-active="true"],
+.distillation-dialog__combobox li:hover {
+	background: var(--hb-hover);
+}
+.distillation-dialog__combobox li > strong,
+.distillation-dialog__combobox li > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.distillation-dialog__combobox li > span {
+	color: var(--hb-muted);
+	font-size: var(--font-ui-smaller);
+}
+.distillation-dialog__combobox .distillation-dialog__empty {
+	color: var(--hb-muted);
+	cursor: default;
+}
 .distillation-dialog__connection {
 	display: grid;
 	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);

@@ -127,6 +127,11 @@ continuous use. For iterative development, keep the vault open and run `pnpm dev
 
 Obsidian requires one manual registration on first use: choose **Open folder as vault**, select `.dev/ux-audit-vault`, trust the local vault, and enable **Graphune**. After that, `pnpm open:device` opens it directly.
 
+## Support
+
+- [Sponsor Graphune on GitHub Sponsors](https://github.com/sponsors/ryo-ebata)
+- [Report a bug or request a feature](https://github.com/Chazutsu/graphune/issues)
+
 ## Contributing
 
 Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), open an

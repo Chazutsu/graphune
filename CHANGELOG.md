@@ -7,23 +7,25 @@ uses Semantic Versioning with an initial `0.1.x` patch-only release policy.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-13
+
+### Added
+
+- GitHub Sponsors and Issue links in the plugin settings, README, and deployment output ([#2]).
+
+### Changed
+
+- Replaced the distillation context selector with an accessible searchable combobox that handles
+  duplicate note names, excludes source notes, and bounds rendered results in large vaults ([#1]).
+
+## [0.1.0] - 2026-10-12
+
 ### Added
 
 - English and Japanese user interfaces with system-language detection and an explicit language
   setting.
 - Catalog coverage tests that require every English message key to have a Japanese translation.
 - Automated release validation for versions, distributable assets, checksums, and release notes.
-
-### Changed
-
-- English is now the source language for user-facing copy and public documentation.
-- CI now treats linting, formatting, type checking, localization coverage, tests, production builds,
-  deploy-contract validation, and visual regression as release gates.
-
-## [0.1.0] - 2026-10-12
-
-### Added
-
 - A heading explorer for browsing and searching note hierarchies from the Obsidian sidebar.
 - Tag and folder filters with title and recency sorting.
 - Drag-and-drop extraction of heading sections into new Markdown files and Canvas nodes.
@@ -39,9 +41,15 @@ uses Semantic Versioning with an initial `0.1.x` patch-only release policy.
 
 ### Changed
 
+- English is now the source language for user-facing copy and public documentation.
+- CI treats linting, formatting, type checking, localization coverage, tests, production builds,
+  deploy-contract validation, and visual regression as release gates.
 - Adopted Graphune as the public product name.
 - Retained the legacy Obsidian plugin ID `obsidian-heptabase` so existing installations and settings
   continue to work.
 
-[Unreleased]: https://github.com/Chazutsu/graphune/compare/0.1.0...HEAD
-[0.1.0]: https://github.com/Chazutsu/graphune/releases/tag/0.1.0
+[Unreleased]: https://github.com/Chazutsu/graphune/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/Chazutsu/graphune/compare/v0.1.0...0.1.1
+[0.1.0]: https://github.com/Chazutsu/graphune/releases/tag/v0.1.0
+[#1]: https://github.com/Chazutsu/graphune/issues/1
+[#2]: https://github.com/Chazutsu/graphune/issues/2

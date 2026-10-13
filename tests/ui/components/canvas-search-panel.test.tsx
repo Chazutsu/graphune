@@ -170,9 +170,10 @@ describe("CanvasSearchPanel", () => {
 		fireEvent.change(within(dialog).getByLabelText("Claim in your own words"), {
 			target: { value: "A claim that stands alone." },
 		});
-		fireEvent.change(within(dialog).getByLabelText("Existing context"), {
-			target: { value: contextFile.path },
-		});
+		const contextCombobox = within(dialog).getByRole("combobox", { name: "Existing context" });
+		fireEvent.focus(contextCombobox);
+		fireEvent.change(contextCombobox, { target: { value: "Context" } });
+		fireEvent.click(within(dialog).getByRole("option", { name: /Context/ }));
 		fireEvent.change(within(dialog).getByLabelText("Why are they related?"), {
 			target: { value: "Extends the context model" },
 		});
@@ -188,6 +189,68 @@ describe("CanvasSearchPanel", () => {
 		]);
 		// Recovery cleanup failed, but the already-created note remains a successful operation.
 		expect(screen.queryByRole("dialog")).toBeNull();
+	});
+
+	it("searches a bounded, accessible context list and excludes source notes", () => {
+		const app = new App();
+		const sourceFile = new TFile("Clippings/Source.md");
+		const duplicateA = new TFile("Projects/Context.md");
+		const duplicateB = new TFile("Areas/Context.md");
+		const bulkFiles = Array.from(
+			{ length: 5_000 },
+			(_, index) => new TFile(`Archive/Note ${String(index).padStart(4, "0")}.md`),
+		);
+		const selectedNodes: CanvasNode[] = [
+			{ id: "source", x: 0, y: 0, width: 200, height: 100, file: sourceFile },
+			{ id: "observation", x: 240, y: 0, width: 200, height: 100 },
+		];
+		const canvasView = createMockCanvasView(selectedNodes);
+		canvasView.canvas.getData = vi.fn().mockReturnValue({
+			nodes: [
+				{ ...selectedNodes[0], type: "file", file: sourceFile.path },
+				{ ...selectedNodes[1], type: "text", text: "Observation" },
+			],
+			edges: [],
+		});
+		app.workspace.getLeavesOfType = vi.fn().mockReturnValue([{ view: canvasView }]);
+		app.vault.getMarkdownFiles = vi
+			.fn()
+			.mockReturnValue([sourceFile, duplicateA, duplicateB, ...bulkFiles]);
+
+		renderPanel(app);
+		fireEvent.click(screen.getByRole("button", { name: "Distill" }));
+		const dialog = screen.getByRole("dialog", { name: "Create a connected note" });
+		const combobox = within(dialog).getByRole("combobox", { name: "Existing context" });
+
+		expect(within(dialog).queryAllByRole("option")).toHaveLength(0);
+		fireEvent.focus(combobox);
+		expect(within(dialog).getAllByRole("option")).toHaveLength(50);
+		expect(within(dialog).queryByRole("option", { name: /Clippings\/Source\.md/ })).toBeNull();
+
+		fireEvent.change(combobox, { target: { value: "Context" } });
+		const duplicateOptions = within(dialog).getAllByRole("option");
+		expect(duplicateOptions).toHaveLength(2);
+		expect(duplicateOptions.map((option) => option.textContent)).toEqual(
+			expect.arrayContaining([
+				expect.stringContaining("Areas/Context.md"),
+				expect.stringContaining("Projects/Context.md"),
+			]),
+		);
+		expect(combobox.getAttribute("aria-expanded")).toBe("true");
+		expect(combobox.getAttribute("aria-controls")).toBeTruthy();
+
+		fireEvent.keyDown(combobox, { key: "ArrowDown" });
+		fireEvent.keyDown(combobox, { key: "Enter" });
+		expect((combobox as HTMLInputElement).value).toBe("Context");
+		expect(combobox.getAttribute("aria-expanded")).toBe("false");
+
+		fireEvent.focus(combobox);
+		fireEvent.keyDown(combobox, { key: "Escape" });
+		expect(screen.queryByRole("dialog")).not.toBeNull();
+		expect(combobox.getAttribute("aria-expanded")).toBe("false");
+		fireEvent.focus(combobox);
+		fireEvent.keyDown(combobox, { key: "Tab" });
+		expect(combobox.getAttribute("aria-expanded")).toBe("false");
 	});
 
 	it("freezes selected materials and restores an unfinished draft for the same selection", async () => {
@@ -249,9 +312,9 @@ describe("CanvasSearchPanel", () => {
 		fireEvent.change(within(dialog).getByLabelText("Claim in your own words"), {
 			target: { value: "Recovered body" },
 		});
-		fireEvent.change(within(dialog).getByLabelText("Existing context"), {
-			target: { value: contextFile.path },
-		});
+		const contextCombobox = within(dialog).getByRole("combobox", { name: "Existing context" });
+		fireEvent.focus(contextCombobox);
+		fireEvent.click(within(dialog).getByRole("option", { name: /Context/ }));
 		fireEvent.change(within(dialog).getByLabelText("Why are they related?"), {
 			target: { value: "Recovered reason" },
 		});
@@ -272,8 +335,8 @@ describe("CanvasSearchPanel", () => {
 		expect(
 			(within(dialog).getByLabelText("Claim in your own words") as HTMLTextAreaElement).value,
 		).toBe("Recovered body");
-		expect((within(dialog).getByLabelText("Existing context") as HTMLSelectElement).value).toBe(
-			contextFile.path,
+		expect((within(dialog).getByLabelText("Existing context") as HTMLInputElement).value).toBe(
+			"Context",
 		);
 		expect((within(dialog).getByLabelText("Why are they related?") as HTMLInputElement).value).toBe(
 			"Recovered reason",

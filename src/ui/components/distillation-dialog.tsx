@@ -9,10 +9,125 @@ import {
 } from "@/services/distillation-draft-store";
 import type { CanvasNodeData, CanvasView } from "@/types/obsidian-canvas";
 import { useApp } from "@/ui/hooks/use-app";
+import type { TFile } from "obsidian";
 import type React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 const EMPTY_DRAFT: DistillationFormDraft = { title: "", body: "", target: "", reason: "" };
+const MAX_VISIBLE_CANDIDATES = 50;
+
+interface NoteComboboxProps {
+	candidates: TFile[];
+	value: string;
+	onChange: (path: string) => void;
+}
+
+function NoteCombobox({ candidates, value, onChange }: NoteComboboxProps): React.ReactElement {
+	const listboxId = useId();
+	const selected = candidates.find((file) => file.path === value);
+	const [query, setQuery] = useState(() => selected?.basename ?? "");
+	const [open, setOpen] = useState(false);
+	const [activeIndex, setActiveIndex] = useState(0);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const normalizedQuery = query.trim().toLocaleLowerCase();
+	const results = useMemo(
+		() =>
+			(normalizedQuery
+				? candidates.filter(
+						(file) =>
+							file.basename.toLocaleLowerCase().includes(normalizedQuery) ||
+							file.path.toLocaleLowerCase().includes(normalizedQuery),
+					)
+				: candidates
+			).slice(0, MAX_VISIBLE_CANDIDATES),
+		[candidates, normalizedQuery],
+	);
+
+	useEffect(() => {
+		const restored = candidates.find((file) => file.path === value);
+		if (restored && document.activeElement !== inputRef.current) setQuery(restored.basename);
+	}, [candidates, value]);
+
+	const choose = (file: TFile) => {
+		onChange(file.path);
+		setQuery(file.basename);
+		setOpen(false);
+	};
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+			event.preventDefault();
+			setOpen(true);
+			setActiveIndex((current) => {
+				if (results.length === 0) return 0;
+				return event.key === "ArrowDown"
+					? Math.min(current + 1, results.length - 1)
+					: Math.max(current - 1, 0);
+			});
+			return;
+		}
+		if (event.key === "Enter" && open && results[activeIndex]) {
+			event.preventDefault();
+			choose(results[activeIndex]);
+			return;
+		}
+		if (event.key === "Escape" && open) {
+			event.preventDefault();
+			event.stopPropagation();
+			setOpen(false);
+			setQuery(selected?.basename ?? "");
+			return;
+		}
+		if (event.key === "Tab") setOpen(false);
+	};
+
+	return (
+		<div className="distillation-dialog__combobox">
+			<input
+				ref={inputRef}
+				role="combobox"
+				aria-autocomplete="list"
+				aria-expanded={open}
+				aria-controls={listboxId}
+				aria-activedescendant={
+					open && results[activeIndex] ? `${listboxId}-${activeIndex}` : undefined
+				}
+				value={query}
+				placeholder={t("distill.contextPlaceholder")}
+				onFocus={() => setOpen(true)}
+				onChange={(event) => {
+					setQuery(event.target.value);
+					onChange("");
+					setActiveIndex(0);
+					setOpen(true);
+				}}
+				onKeyDown={handleKeyDown}
+			/>
+			{open && (
+				<ul id={listboxId} role="listbox" aria-label={t("distill.contextResults")}>
+					{results.length === 0 ? (
+						<li className="distillation-dialog__empty">{t("distill.contextNoResults")}</li>
+					) : (
+						results.map((file, index) => (
+							<li
+								id={`${listboxId}-${index}`}
+								key={file.path}
+								role="option"
+								aria-selected={file.path === value}
+								data-active={index === activeIndex}
+								onMouseDown={(event) => event.preventDefault()}
+								onClick={() => choose(file)}
+							>
+								<strong>{file.basename}</strong>
+								<span>{file.path}</span>
+							</li>
+						))
+					)}
+				</ul>
+			)}
+		</div>
+	);
+}
 
 interface DistillationDialogProps {
 	canvasView: CanvasView;
@@ -170,17 +285,11 @@ export function DistillationDialog({
 					<div className="distillation-dialog__connection">
 						<label>
 							<span>{t("distill.context")}</span>
-							<select
+							<NoteCombobox
+								candidates={candidates}
 								value={draft.target}
-								onChange={(event) => updateDraft({ target: event.target.value })}
-							>
-								<option value="">{t("distill.contextPlaceholder")}</option>
-								{candidates.map((file) => (
-									<option key={file.path} value={file.path}>
-										{file.basename}
-									</option>
-								))}
-							</select>
+								onChange={(target) => updateDraft({ target })}
+							/>
 						</label>
 						<label>
 							<span>{t("distill.reason")}</span>

@@ -1,4 +1,4 @@
-import { SettingTab } from "@/settings/setting-tab";
+import { GRAPHUNE_DONATE_URL, GRAPHUNE_ISSUES_URL, SettingTab } from "@/settings/setting-tab";
 import { setLocale } from "@/i18n";
 import { DEFAULT_SETTINGS, type GraphuneSettings } from "@/types/settings";
 import { App, Plugin, Setting } from "obsidian";
@@ -76,7 +76,23 @@ describe("SettingTab", () => {
 			expect(h2Texts).toContain("Quick cards");
 			expect(h2Texts).toContain("Edge sync");
 			expect(h2Texts).toContain("Edges");
+			expect(h2Texts).toContain("Support");
 			expect(h2Texts).not.toContain("Multi-Drop Layout Settings");
+		});
+
+		it("links to GitHub Sponsors and the public issue tracker", () => {
+			tab.display();
+			const createElMock = vi.mocked(tab.containerEl.createEl);
+			expect(createElMock).toHaveBeenCalledWith("a", {
+				text: "Sponsor Graphune",
+				href: GRAPHUNE_DONATE_URL,
+				attr: { target: "_blank", rel: "noopener noreferrer" },
+			});
+			expect(createElMock).toHaveBeenCalledWith("a", {
+				text: "Report an issue",
+				href: GRAPHUNE_ISSUES_URL,
+				attr: { target: "_blank", rel: "noopener noreferrer" },
+			});
 		});
 
 		it("creates 10 Setting instances", () => {

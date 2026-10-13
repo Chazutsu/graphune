@@ -4,6 +4,12 @@ import process from "node:process";
 import { collectArtifactSet, deployPluginTargets, validateObsidianManifest } from "obsidian-plugin-kit/deploy";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
+const donateUrl = "https://github.com/sponsors/ryo-ebata";
+const issuesUrl = "https://github.com/Chazutsu/graphune/issues";
+const printSupportLinks = () => {
+	console.log(`support: ${donateUrl}`);
+	console.log(`issues: ${issuesUrl}`);
+};
 const vaults = process.argv.flatMap((argument, index, arguments_) =>
 	argument === "--vault" && arguments_[index + 1] ? [path.resolve(arguments_[index + 1])] : [],
 );
@@ -20,6 +26,7 @@ const { sourceFiles, digests } = await collectArtifactSet({ source: projectRoot 
 if (process.argv.includes("--check")) {
 	console.log(`validated ${manifest.id}@${manifest.version}`);
 	for (const [file, digest] of digests) console.log(`${file} sha256:${digest.slice(0, 12)}`);
+	printSupportLinks();
 	process.exit(0);
 }
 
@@ -34,3 +41,4 @@ await deployPluginTargets({
 	pluginId: manifest.id,
 	log: (target) => console.log(`deployed and enabled ${manifest.id}@${manifest.version} -> ${target}`),
 });
+printSupportLinks();

@@ -3,6 +3,9 @@ import { setLocale, t } from "@/i18n";
 import type { App, Plugin } from "obsidian";
 import { getLanguage, PluginSettingTab, Setting } from "obsidian";
 
+export const GRAPHUNE_DONATE_URL = "https://github.com/sponsors/ryo-ebata";
+export const GRAPHUNE_ISSUES_URL = "https://github.com/Chazutsu/graphune/issues";
+
 export class SettingTab extends PluginSettingTab {
 	private settings: GraphuneSettings;
 	private onSettingsChange: (settings: GraphuneSettings) => void;
@@ -141,6 +144,20 @@ export class SettingTab extends PluginSettingTab {
 						this.display();
 					}),
 			);
+
+		containerEl.createEl("h2", { text: t("settings.support") });
+		containerEl.createEl("p", { text: t("settings.support.description") });
+		containerEl.createEl("a", {
+			text: t("settings.support.donate"),
+			href: GRAPHUNE_DONATE_URL,
+			attr: { target: "_blank", rel: "noopener noreferrer" },
+		});
+		containerEl.createEl("br");
+		containerEl.createEl("a", {
+			text: t("settings.support.issues"),
+			href: GRAPHUNE_ISSUES_URL,
+			attr: { target: "_blank", rel: "noopener noreferrer" },
+		});
 	}
 
 	private updateSetting<K extends keyof GraphuneSettings>(

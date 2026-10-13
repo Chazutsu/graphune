@@ -1,9 +1,10 @@
 {
   "id": "obsidian-heptabase",
   "name": "Graphune",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minAppVersion": "1.5.0",
   "description": "Shape connected knowledge from vault headings and Obsidian Canvas.",
   "author": "ebataryou",
+  "fundingUrl": "https://github.com/sponsors/ryo-ebata",
   "isDesktopOnly": false
 }
