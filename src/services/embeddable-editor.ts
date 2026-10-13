@@ -103,28 +103,35 @@ function resolveEditorPrototype(app: App): ScrollableMarkdownEditorConstructor {
 		return EditorPrototype;
 	}
 
-	// @ts-expect-error — accessing internal Obsidian API
-	const embedFn = app.embedRegistry?.embedByExtension?.md;
+	const embedRegistry = readProperty(app, "embedRegistry");
+	const embedByExtension = readProperty(embedRegistry, "embedByExtension");
+	const embedFn = readProperty(embedByExtension, "md");
 	if (typeof embedFn !== "function") {
 		throw new Error("Obsidian's Markdown editor API is unavailable");
 	}
 
 	let widgetEditorView: InternalWidgetEditorView | null = null;
 	try {
-		const resolvedView = embedFn(
-			{ app, containerEl: document.createElement("div") },
-			null,
-			"",
-		) as InternalWidgetEditorView;
+		const callEmbed = embedFn as (...args: unknown[]) => unknown;
+		const resolved: unknown = callEmbed({ app, containerEl: createDiv() }, null, "");
+		if (!isInternalWidgetEditorView(resolved)) {
+			throw new Error("Obsidian's Markdown editor view is incompatible");
+		}
+		const resolvedView = resolved;
 		widgetEditorView = resolvedView;
 		resolvedView.editable = true;
 		resolvedView.showEditor();
-		const parentPrototype = Object.getPrototypeOf(resolvedView.editMode);
-		const prototype = parentPrototype && Object.getPrototypeOf(parentPrototype);
-		if (!prototype || typeof prototype.constructor !== "function") {
+		const editMode = resolvedView.editMode;
+		if (!isObject(editMode)) {
+			throw new Error("Obsidian's Markdown editor mode is incompatible");
+		}
+		const parentPrototype = Reflect.getPrototypeOf(editMode);
+		const prototype = parentPrototype && Reflect.getPrototypeOf(parentPrototype);
+		const constructor = readProperty(prototype, "constructor");
+		if (typeof constructor !== "function") {
 			throw new Error("Obsidian's Markdown editor prototype could not be resolved");
 		}
-		EditorPrototype = prototype.constructor as ScrollableMarkdownEditorConstructor;
+		EditorPrototype = constructor as ScrollableMarkdownEditorConstructor;
 	} catch (error) {
 		throw new Error("Failed to initialize the embedded Markdown editor", { cause: error });
 	} finally {
@@ -132,6 +139,24 @@ function resolveEditorPrototype(app: App): ScrollableMarkdownEditorConstructor {
 	}
 
 	return EditorPrototype;
+}
+
+function isObject(value: unknown): value is object {
+	return (typeof value === "object" && value !== null) || typeof value === "function";
+}
+
+function readProperty(value: unknown, key: string): unknown {
+	if (!isObject(value)) return undefined;
+	return Reflect.get(value, key);
+}
+
+function isInternalWidgetEditorView(value: unknown): value is InternalWidgetEditorView {
+	return (
+		isObject(value) &&
+		typeof readProperty(value, "showEditor") === "function" &&
+		typeof readProperty(value, "unload") === "function" &&
+		"editMode" in value
+	);
 }
 
 // --- Public API ---

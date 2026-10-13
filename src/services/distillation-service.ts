@@ -50,7 +50,7 @@ export class DistillationService {
 			return file;
 		} catch (error) {
 			const rollbackErrors = await this.rollback(
-				replacement.rollback,
+				() => replacement.rollback(),
 				sourceMutations,
 				file.path,
 				file,
@@ -78,6 +78,7 @@ export class DistillationService {
 			const file = this.app.vault.getAbstractFileByPath(path);
 			if (!(file instanceof TFile)) continue;
 			await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+				if (!isRecord(frontmatter)) return;
 				const hadValue = Object.prototype.hasOwnProperty.call(frontmatter, "graphune-processed-by");
 				const previous = structuredClone(frontmatter["graphune-processed-by"]);
 				const current = Array.isArray(frontmatter["graphune-processed-by"])
@@ -107,6 +108,7 @@ export class DistillationService {
 		for (const mutation of mutations.toReversed()) {
 			try {
 				await this.app.fileManager.processFrontMatter(mutation.file, (frontmatter) => {
+					if (!isRecord(frontmatter)) return;
 					const current = frontmatter["graphune-processed-by"];
 					if (JSON.stringify(current) === JSON.stringify(mutation.expected)) {
 						if (mutation.hadValue) frontmatter["graphune-processed-by"] = mutation.previous;
@@ -130,6 +132,10 @@ export class DistillationService {
 		}
 		return errors;
 	}
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 interface SourceMutation {

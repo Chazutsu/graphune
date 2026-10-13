@@ -3,7 +3,7 @@ export function showDropAnimation(
 	position: { x: number; y: number },
 	count?: number,
 ): void {
-	const el = document.createElement("div");
+	const el = container.createDiv();
 	el.setAttribute("data-drop-animation", "");
 	el.className = "heptabase-drop-animation";
 	el.style.left = `${position.x}px`;
@@ -12,8 +12,6 @@ export function showDropAnimation(
 	if (count !== undefined && count > 1) {
 		el.textContent = String(count);
 	}
-
-	container.appendChild(el);
 
 	window.setTimeout(() => {
 		el.remove();

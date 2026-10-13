@@ -232,6 +232,7 @@ export class Menu {
 
 export class PluginSettingTab {
 	app: App;
+	update = vi.fn();
 	private _containerEl: unknown;
 
 	get containerEl(): HTMLElement & {

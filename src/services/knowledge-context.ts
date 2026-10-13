@@ -161,7 +161,9 @@ export class KnowledgeContextService {
 			nodesByFile.set(placement.filePath, nodeIds);
 		}
 		for (const [filePath, nodeIds] of nodesByFile) {
-			const canvases = this.canvasesByNote.get(filePath) ?? new Map();
+			const canvases =
+				this.canvasesByNote.get(filePath) ??
+				new Map<string, { label: string; nodeIds: string[] }>();
 			canvases.set(canvasFile.path, { label: canvasFile.basename, nodeIds });
 			this.canvasesByNote.set(filePath, canvases);
 		}
@@ -280,7 +282,7 @@ export function rankRelatedCandidates(
 function metadataTags(app: App, file: TFile): string[] {
 	const cache = app.metadataCache.getFileCache(file);
 	const inline = (cache?.tags ?? []).map(({ tag }) => normalizeSignal(tag.replace(/^#/, "")));
-	const raw = cache?.frontmatter?.tags;
+	const raw = readUnknownProperty(cache?.frontmatter, "tags");
 	const frontmatter = Array.isArray(raw)
 		? raw.map(String)
 		: typeof raw === "string"
@@ -301,6 +303,13 @@ function metadataHeadings(app: App, file: TFile): string[] {
 
 function normalizeSignal(value: string): string {
 	return value.trim().toLocaleLowerCase();
+}
+
+function readUnknownProperty(value: unknown, key: string): unknown {
+	if (typeof value !== "object" || value === null || Array.isArray(value)) return undefined;
+	return Object.prototype.hasOwnProperty.call(value, key)
+		? Object.getOwnPropertyDescriptor(value, key)?.value
+		: undefined;
 }
 
 function intersection(left: readonly string[], right: readonly string[]): string[] {
