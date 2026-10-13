@@ -153,7 +153,7 @@ describe("QuickCardCreator", () => {
 			await expect(
 				quickCardCreator.createCardAtPosition(canvas, canvasFile, { x: 0, y: 0 }, "Untitled"),
 			).rejects.toThrow("node failure");
-			expect(app.vault.delete).toHaveBeenCalledWith(createdFile);
+			expect(app.fileManager.trashFile).toHaveBeenCalledWith(createdFile);
 		});
 
 		it("uses canvasFile as the source file for FileCreator", async () => {

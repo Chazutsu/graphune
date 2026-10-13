@@ -1,6 +1,6 @@
 # Graphune
 
-![Obsidian](https://img.shields.io/badge/Obsidian-%3E%3D1.5.0-blueviolet)
+![Obsidian](https://img.shields.io/badge/Obsidian-%3E%3D1.8.7-blueviolet)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 Tune your knowledge. Graphune turns vault headings into a spatial, connected workspace on Obsidian Canvas.

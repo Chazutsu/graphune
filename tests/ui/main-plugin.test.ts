@@ -149,6 +149,19 @@ describe("GraphunePlugin lifecycle", () => {
 		finishScan?.();
 	});
 
+	it("detaches only Graphune leaves when unloading", async () => {
+		const firstLeaf = { detach: vi.fn() };
+		const secondLeaf = { detach: vi.fn() };
+		app.workspace.getLeavesOfType.mockReturnValue([firstLeaf, secondLeaf]);
+		await plugin.onload();
+
+		await plugin.onunload();
+
+		expect(app.workspace.getLeavesOfType).toHaveBeenLastCalledWith(VIEW_TYPE_HEADING_EXPLORER);
+		expect(firstLeaf.detach).toHaveBeenCalledOnce();
+		expect(secondLeaf.detach).toHaveBeenCalledOnce();
+	});
+
 	it("reinitializes the serialized edge sync after settings recreate services", async () => {
 		const canvasFile = new TFile("board.canvas");
 		services.canvasObserver.getActiveCanvasView.mockReturnValue({ file: canvasFile });

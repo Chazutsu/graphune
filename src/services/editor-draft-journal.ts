@@ -1,4 +1,4 @@
-import { normalizePath, type App, type TFile } from "obsidian";
+import { normalizePath, type App, TFile } from "obsidian";
 
 const JOURNAL_FOLDER = ".graphune/recovery";
 const JOURNAL_PATH = `${JOURNAL_FOLDER}/editor-drafts.json`;
@@ -145,7 +145,7 @@ export class EditorDraftJournal {
 
 	private getJournalFile(): TFile | null {
 		const file = this.app.vault.getAbstractFileByPath(normalizePath(JOURNAL_PATH));
-		return file && "extension" in file ? (file as TFile) : null;
+		return file instanceof TFile ? file : null;
 	}
 
 	private async ensureFolder(): Promise<void> {

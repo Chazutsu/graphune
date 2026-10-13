@@ -170,9 +170,11 @@ export default class GraphunePlugin extends Plugin {
 		this.initializeEdgeSync();
 	}
 
-	async onunload(): Promise<void> {
+	onunload(): void {
 		this.services.edgeSync.reset();
-		this.app.workspace.detachLeavesOfType(VIEW_TYPE_HEADING_EXPLORER);
+		for (const leaf of this.app.workspace.getLeavesOfType(VIEW_TYPE_HEADING_EXPLORER)) {
+			leaf.detach();
+		}
 	}
 
 	private registerEdgeSyncVaultEvents(): void {

@@ -7,6 +7,11 @@ uses Semantic Versioning with an initial `0.1.x` patch-only release policy.
 
 ## [Unreleased]
 
+### Changed
+
+- Raised the minimum Obsidian version to 1.8.7 and replaced deprecated workspace and file APIs
+  with supported leaf and trash operations.
+
 ## [0.1.2] - 2026-10-13
 
 ### Changed
