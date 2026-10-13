@@ -3,6 +3,11 @@
   "version": "0.1.2",
   "private": true,
   "packageManager": "pnpm@10.7.0",
+  "pnpm": {
+    "overrides": {
+      "tinypool": "2.1.2"
+    }
+  },
   "engines": { "node": ">=24" },
   "license": "MIT",
   "repository": "github:Chazutsu/graphune",
@@ -44,18 +49,18 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.1.2",
-    "@vitest/coverage-v8": "4.0.17",
+    "@vitest/coverage-v8": "4.1.11",
     "builtin-modules": "^5.0.0",
     "jsdom": "^28.1.0",
     "obsidian": "1.14.4",
-    "oxfmt": "^0.33.0",
+    "oxfmt": "0.34.0",
     "oxlint": "^1.48.0",
     "rolldown": "1.0.0-rc.5",
     "tailwindcss": "4.2.0",
     "typescript": "6.0.0-beta",
     "virtual-obsidian": "https://github.com/Chazutsu/virtual-obsidian/archive/refs/tags/v0.1.0.tar.gz",
     "vite": "8.0.0-beta.15",
-    "vitest": "4.0.17"
+    "vitest": "4.1.11"
   },
   "dependencies": {
     "obsidian-plugin-kit": "https://github.com/Chazutsu/obsidian-plugin-kit/archive/refs/tags/v0.1.0.tar.gz",
