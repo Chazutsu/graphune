@@ -61,9 +61,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 4.1.11
         version: 4.1.11(vitest@4.1.11)
-      builtin-modules:
-        specifier: ^5.0.0
-        version: 5.4.0
       eslint:
         specifier: 9.39.3
         version: 9.39.3(jiti@2.7.0)

@@ -54,7 +54,6 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.1.2",
     "@vitest/coverage-v8": "4.1.11",
-    "builtin-modules": "^5.0.0",
     "eslint": "9.39.3",
     "eslint-plugin-obsidianmd": "0.4.2",
     "jsdom": "^28.1.0",

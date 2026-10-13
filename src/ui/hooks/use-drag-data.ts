@@ -14,18 +14,18 @@ export interface UseDragDataReturn {
 }
 
 function createGhostElement(options: DragVisualOptions): HTMLElement {
-	const ghost = document.createElement("div");
+	const ghost = createDiv();
 	ghost.className = "heptabase-drag-ghost";
 
 	/* v8 ignore next 4 -- createGhostElement is only called when label is truthy */
 	if (options.label) {
-		const label = document.createElement("span");
+		const label = createSpan();
 		label.textContent = options.label;
 		ghost.appendChild(label);
 	}
 
 	if (options.badgeCount !== undefined && options.badgeCount > 0) {
-		const badge = document.createElement("span");
+		const badge = createSpan();
 		badge.className = "heptabase-drag-badge";
 		badge.textContent = String(options.badgeCount);
 		ghost.appendChild(badge);

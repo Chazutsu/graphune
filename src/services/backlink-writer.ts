@@ -129,6 +129,7 @@ export class BacklinkWriter {
 		let changed = false;
 
 		await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+			if (!isRecord(frontmatter)) return;
 			const normalized = normalizeConnections(frontmatter[key]);
 			if (normalized === null) return;
 			const connections = normalized.values;
@@ -154,6 +155,7 @@ export class BacklinkWriter {
 		let changed = false;
 
 		await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+			if (!isRecord(frontmatter)) return;
 			const normalized = normalizeConnections(frontmatter[key]);
 			if (normalized === null || normalized.wasAbsent) return;
 			const connections = normalized.values;
@@ -172,6 +174,10 @@ export class BacklinkWriter {
 		});
 		return changed;
 	}
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function normalizeConnections(

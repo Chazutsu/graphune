@@ -213,7 +213,7 @@ export function DistillationDialog({
 		return () => window.removeEventListener("keydown", closeOnEscape);
 	}, [onClose, saving]);
 
-	const submit = async (event: React.FormEvent) => {
+	const submit = async (event: React.SubmitEvent) => {
 		event.preventDefault();
 		setError("");
 		setSaving(true);

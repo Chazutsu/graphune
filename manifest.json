@@ -2,7 +2,7 @@
   "id": "graphune",
   "name": "Graphune",
   "version": "0.1.2",
-  "minAppVersion": "1.8.7",
+  "minAppVersion": "1.13.0",
   "description": "Shape connected knowledge from vault headings and Obsidian Canvas.",
   "author": "ebataryou",
   "fundingUrl": "https://github.com/sponsors/ryo-ebata",

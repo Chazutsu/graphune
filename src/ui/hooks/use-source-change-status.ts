@@ -11,7 +11,7 @@ interface SourceChangeState {
 export function useSourceChangeStatus(file: TFile): SourceChangeState {
 	const { app } = useApp();
 	const detector = useMemo(() => new SourceChangeDetector(app), [app]);
-	const frontmatter = app.metadataCache.getFileCache(file)?.frontmatter;
+	const frontmatter = toRecord(app.metadataCache.getFileCache(file)?.frontmatter);
 	const sourcePath =
 		typeof frontmatter?.["heptabase-source"] === "string" ? frontmatter["heptabase-source"] : null;
 	const fingerprint = frontmatter?.["heptabase-source-content-hash"];
@@ -61,4 +61,10 @@ export function useSourceChangeStatus(file: TFile): SourceChangeState {
 		status: typeof fingerprint === "string" && sourcePath ? status : "not-tracked",
 		sourcePath,
 	};
+}
+
+function toRecord(value: unknown): Record<string, unknown> | undefined {
+	return typeof value === "object" && value !== null && !Array.isArray(value)
+		? (value as Record<string, unknown>)
+		: undefined;
 }

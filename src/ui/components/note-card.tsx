@@ -133,7 +133,7 @@ export const NoteCard = memo(function NoteCardInner({
 		if (!el || !excerpt) return;
 		let cancelled = false;
 		const component = new Component();
-		const renderTarget = document.createElement("div");
+		const renderTarget = createDiv();
 		component.load();
 		void MarkdownRenderer.render(app, excerpt, renderTarget, file.path, component)
 			.then(() => {
@@ -331,7 +331,8 @@ function highlightText(root: HTMLElement, query: string): void {
 		const text = textNode.data;
 		const index = text.toLocaleLowerCase().indexOf(lowerQuery);
 		if (index < 0) continue;
-		const mark = document.createElement("mark");
+		const mark = root.createEl("mark");
+		mark.detach();
 		mark.className = "heptabase-search-match";
 		mark.textContent = text.slice(index, index + normalizedQuery.length);
 		textNode.replaceWith(text.slice(0, index), mark, text.slice(index + normalizedQuery.length));
