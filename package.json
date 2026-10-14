@@ -63,7 +63,7 @@
     "oxlint": "^1.48.0",
     "rolldown": "1.0.0-rc.5",
     "tailwindcss": "4.2.0",
-    "typescript": "6.0.0-beta",
+    "typescript": "6.0.3",
     "typescript-eslint": "8.71.2",
     "virtual-obsidian": "https://github.com/Chazutsu/virtual-obsidian/archive/refs/tags/v0.1.0.tar.gz",
     "vite": "8.0.0-beta.15",
