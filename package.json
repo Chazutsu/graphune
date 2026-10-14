@@ -44,7 +44,7 @@
   "devDependencies": {
     "@codemirror/state": "6.7.6",
     "@codemirror/view": "6.43.13",
-    "@eslint/js": "9.39.3",
+    "@eslint/js": "9.39.5",
     "@eslint/json": "0.14.0",
     "@playwright/test": "1.64.0",
     "@tailwindcss/cli": "4.2.0",
